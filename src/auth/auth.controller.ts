@@ -1,14 +1,17 @@
 import { Controller, Post, Get, UseGuards, Req, Request } from '@nestjs/common';
-import { User } from 'src/common/decorators';
+import { Auth, User } from 'src/common/decorators';
 import { User as UserEntity } from 'src/user/entity';
 import { JwtAuthGuard, LocalAuthGuard } from './guards';
 import { AuthService } from './auth.service';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @UseGuards(LocalAuthGuard)
+  @ApiBearerAuth()
   @Post('login')
   async login(@User() user: UserEntity, @Request() req: any) {
     console.log(req.user);
@@ -16,9 +19,9 @@ export class AuthController {
     return data;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Auth()
   @Get('profile')
-  profile() {
-    return 'Estos son tus datos';
+  profile(@User() user: UserEntity) {
+    return user;
   }
 }

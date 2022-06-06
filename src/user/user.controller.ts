@@ -7,9 +7,13 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { Auth } from 'src/common/decorators';
 import { CreateUserDto } from './dtos';
 import { UserService } from './user.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@Auth()
+@ApiTags('Users')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
